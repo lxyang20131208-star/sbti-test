@@ -515,8 +515,8 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 56%;
-      background: linear-gradient(180deg, #f7fbf8 78%, rgba(247,251,248,0) 100%);
+      height: 40%;
+      background: linear-gradient(180deg, #f7fbf8 62%, rgba(247,251,248,0) 100%);
       z-index: 2;
       display: flex;
       flex-direction: column;
@@ -692,6 +692,65 @@
       flex-wrap: wrap;
       margin-top: 22px;
     }
+
+    /* EverMemory.ai ad card */
+    .evermemory-ad {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f5faf6 0%, #eef7f0 100%);
+      margin-top: 0;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      flex-wrap: wrap;
+    }
+    .evermemory-ad:hover {
+      box-shadow: 0 8px 28px rgba(47, 73, 55, 0.13);
+      transform: translateY(-2px);
+    }
+    .evermemory-ad-brand {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-strong);
+      letter-spacing: 0.01em;
+      margin: 0 0 4px;
+    }
+    .evermemory-ad-body {
+      flex: 1;
+      min-width: 160px;
+    }
+    .evermemory-ad-tagline {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 3px;
+      line-height: 1.4;
+    }
+    .evermemory-ad-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .evermemory-ad-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 9px 18px;
+      background: var(--accent-strong);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.01em;
+    }
+
     @media (max-width: 860px) {
       .result-top { grid-template-columns: 1fr; }
     }
@@ -760,6 +819,15 @@
               <div class="type-subname" id="resultTypeSub">결과 설명이 여기에 표시됩니다.</div>
             </div>
           </div>
+
+          <a href="https://evermemory.ai/ko" target="_blank" rel="noopener" class="evermemory-ad">
+            <div class="evermemory-ad-body">
+              <p class="evermemory-ad-brand">EverMemory.ai</p>
+              <p class="evermemory-ad-tagline">당신의 성격은 이야기의 시작일 뿐입니다.</p>
+              <p class="evermemory-ad-sub">당신의 인생 이야기를 기록하고, 모든 기억을 영원히 간직하세요.</p>
+            </div>
+            <span class="evermemory-ad-cta">무료로 시작 →</span>
+          </a>
 
           <div class="analysis-box">
             <h3>성격 분석</h3>
