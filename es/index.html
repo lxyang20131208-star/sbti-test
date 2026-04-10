@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Personalidad SBTI</title>
+  <style>
+    :root {
+      --bg: #f6faf6;
+      --panel: #ffffff;
+      --text: #1e2a22;
+      --muted: #6a786f;
+      --line: #dbe8dd;
+      --soft: #edf6ef;
+      --accent: #6c8d71;
+      --accent-strong: #4d6a53;
+      --shadow: 0 16px 40px rgba(47, 73, 55, 0.08);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, #f8fff8 0, #f6faf6 36%, #f2f7f3 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-top: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(127, 165, 134, 0.18), rgba(127, 165, 134, 0.02));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--accent-strong);
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 680px;
+    }
+    .hero .sub {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      max-width: 720px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    .mini-panel {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fbfefb, #f3f8f4);
+    }
+
+    .mini-panel h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .mini-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+        .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .hero-minimal {
+      min-height: 48vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 42px 20px;
+    }
+    .hero-minimal::after { display: none; }
+    .hero-minimal h1 {
+      max-width: none;
+      margin: 0;
+    }
+    .hero-actions-single {
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+      font: inherit;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
+
+    .btn-primary {
+      background: var(--accent-strong);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(77, 106, 83, 0.18);
+      font-weight: 700;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--accent-strong);
+      padding: 14px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      font-weight: 700;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .test-wrap,
+    .result-wrap {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .progress {
+      flex: 1;
+      min-width: 240px;
+      height: 10px;
+      background: #edf3ee;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #97b59c, #5b7a62);
+      border-radius: inherit;
+      transition: width .22s ease;
+    }
+
+    .progress-text {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .question {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdfb);
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+
+    .question-title {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+
+    .option:hover {
+      border-color: #bcd0c1;
+      background: #f8fcf9;
+    }
+
+    .option input {
+      margin-top: 3px;
+      accent-color: var(--accent-strong);
+      transform: scale(1.1);
+      flex-shrink: 0;
+    }
+
+    .option-code {
+      font-weight: 800;
+      color: var(--accent-strong);
+      min-width: 22px;
+    }
+
+    .actions-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      padding-top: 6px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .result-hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .type-box,
+    .score-box,
+    .dim-box,
+    .top3-box,
+    .about-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdfb);
+    }
+
+    .type-kicker {
+      font-size: 12px;
+      color: var(--accent-strong);
+      margin-bottom: 8px;
+      letter-spacing: .05em;
+    }
+
+    .type-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .type-subname {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .match {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--accent-strong);
+      font-weight: 700;
+    }
+
+    .type-desc {
+      margin-top: 18px;
+      line-height: 1.85;
+      font-size: 15px;
+      color: #304034;
+    }
+
+    .score-box h3,
+    .dim-box h3,
+    .top3-box h3,
+    .about-box h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .score-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .score-item .k {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .score-item .v {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-strong);
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .dim-pill {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .dim-pill .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .dim-pill .value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-strong);
+    }
+
+    .top3-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .top3-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .top3-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .top3-item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .top3-score {
+      color: var(--accent-strong);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .about-box p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .result-top {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .poster-box, .type-box, .analysis-box, .dim-box, .note-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdfb);
+    }
+        .poster-box {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-height: 280px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(circle at top right, rgba(127,165,134,0.16), rgba(127,165,134,0) 40%),
+        linear-gradient(180deg, #ffffff, #f7fbf8);
+    }
+    .poster-box::after {
+      content: "";
+      position: absolute;
+      right: -46px;
+      bottom: -46px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(127,165,134,0.12), rgba(127,165,134,0.01));
+      pointer-events: none;
+    }
+    .poster-image {
+      width: 100%;
+      min-height: 220px;
+      max-height: 460px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.75);
+      position: relative;
+      z-index: 1;
+    }
+    .poster-box.no-image .poster-image {
+      display: none;
+    }
+    .poster-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56%;
+      background: linear-gradient(180deg, #f7fbf8 78%, rgba(247,251,248,0) 100%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px 16px 0;
+      border-radius: 18px 18px 0 0;
+    }
+    .poster-overlay .overlay-label {
+      font-size: 11px;
+      color: var(--accent-strong);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .poster-overlay .overlay-code {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .poster-overlay .overlay-name {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .poster-caption {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+    .type-kicker {
+      font-size: 12px;
+      color: var(--accent-strong);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .type-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .type-subname {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .match {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--accent-strong);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .result-actions {
+      margin-top: 22px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #304034;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .dim-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fff;
+    }
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .dim-item-score {
+      color: var(--accent-strong);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .dim-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .note-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .author-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdfb);
+      overflow: hidden;
+    }
+    .author-box summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .author-box summary::-webkit-details-marker { display: none; }
+    .author-box summary::after {
+      content: 'Ver más';
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-strong);
+      border: 1px solid var(--line);
+      background: var(--soft);
+      padding: 6px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .author-box[open] summary::after {
+      content: 'Cerrar';
+    }
+    .author-content {
+      border-top: 1px solid var(--line);
+      padding: 0 18px 18px;
+    }
+    .author-content p {
+      margin: 14px 0 0;
+      color: #304034;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    @media (max-width: 860px) {
+      .result-top { grid-template-columns: 1fr; }
+    }
+
+@media (max-width: 860px) {
+      .hero-grid,
+      .result-hero {
+        grid-template-columns: 1fr;
+      }
+      .dim-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .shell { padding: 14px 12px 42px; }
+      .hero, .test-wrap, .result-wrap { padding: 16px; }
+      .hero h1 { font-size: 32px; }
+      .question-title { font-size: 15px; }
+      .dim-grid,
+      .score-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section id="intro" class="screen active">
+      <div class="hero card hero-minimal">
+        <h1>MBTI está anticuado. Llega SBTI.</h1>
+        <div class="hero-actions hero-actions-single">
+          <button id="startBtn" class="btn-primary">Comenzar test</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-wrap card">
+        <div class="topbar">
+          <div class="progress"><span id="progressBar"></span></div>
+          <div class="progress-text" id="progressText">0 / 31</div>
+        </div>
+
+        <div id="questionList" class="question-list"></div>
+
+        <div class="actions-bottom">
+          <div class="hint" id="testHint">Responde todas las preguntas para continuar. El mundo ya es un caos — al menos termina el test.</div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button id="backIntroBtn" class="btn-secondary">Volver</button>
+            <button id="submitBtn" class="btn-primary" disabled>Enviar y ver resultados</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="result" class="screen">
+      <div class="result-wrap card">
+        <div class="result-layout">
+          <div class="result-top">
+            <div class="poster-box" id="posterBox">
+              <img id="posterImage" class="poster-image" alt="Resultado de personalidad" />
+              <div id="posterCaption" class="poster-caption">¿A que lo adiviné?</div>
+            </div>
+
+            <div class="type-box">
+              <div class="type-kicker" id="resultModeKicker">Tu tipo principal</div>
+              <div class="type-name" id="resultTypeName">CTRL — El Controlador</div>
+              <div class="match" id="matchBadge">Coincidencia 92%</div>
+              <div class="type-subname" id="resultTypeSub">La nota del sistema aparecerá aquí.</div>
+            </div>
+          </div>
+
+          <div class="analysis-box">
+            <h3>Análisis de personalidad</h3>
+            <p id="resultDesc"></p>
+          </div>
+
+          <div class="dim-box">
+            <h3>15 dimensiones</h3>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="note-box">
+            <h3>Aviso</h3>
+            <p id="funNote">Este test es solo entretenimiento. No lo uses como diagnóstico, currículum, perfil de citas, excusa para romper con alguien, sesión de espiritismo, lectura del tarot ni veredicto sobre tu vida.</p>
+          </div>
+
+                    <details class="author-box">
+            <summary>De la creadora</summary>
+            <div class="author-content">
+              <p>Este test fue publicado originalmente en Bilibili por @蛆肉儿串儿 (UID 417038183). Empezó como un intento de convencer a una amiga que bebía demasiado para que redujera el alcohol. No funcionó. Pero aquí estamos.</p>
+              <p>Como la propia autora es de tipo SHIT (La Cínica), se tomó la libertad de burlarse de todo el mundo por igual — perdón por eso. Aunque también es una belleza espectacular, así que seguro que la perdonas. Si estás en Bilibili, puedes seguirla allí también.</p>
+              <p>En cuanto al test: es difícil equilibrar entretenimiento y rigor, así que algunas descripciones son intencionadamente vagas o directamente falsas (por ejemplo, Dior-s no significa que seas realmente un perdedor, aunque... bueno). Disculpas de antemano si algo ofende.</p>
+              <p>Con tiempo y energía limitados, esto es un borrador bastante caótico — habrá actualizaciones con el tiempo. El objetivo principal es pasarlo bien, así que por favor no lo uses con fines comerciales.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="result-actions">
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button id="restartBtn" class="btn-secondary">Repetir</button>
+            <button id="toTopBtn" class="btn-primary">Inicio</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+
+  <script>
+    const dimensionMeta = {
+      S1: { name: 'S1 Autoestima', model: 'Modelo del Yo' },
+      S2: { name: 'S2 Claridad Personal', model: 'Modelo del Yo' },
+      S3: { name: 'S3 Valores Centrales', model: 'Modelo del Yo' },
+      E1: { name: 'E1 Seguridad de Apego', model: 'Modelo Emocional' },
+      E2: { name: 'E2 Inversión Emocional', model: 'Modelo Emocional' },
+      E3: { name: 'E3 Límites y Dependencia', model: 'Modelo Emocional' },
+      A1: { name: 'A1 Visión del Mundo', model: 'Modelo Actitudinal' },
+      A2: { name: 'A2 Flexibilidad ante Normas', model: 'Modelo Actitudinal' },
+      A3: { name: 'A3 Sentido de Vida', model: 'Modelo Actitudinal' },
+      Ac1: { name: 'Ac1 Orientación Motivacional', model: 'Modelo de Acción' },
+      Ac2: { name: 'Ac2 Estilo de Decisión', model: 'Modelo de Acción' },
+      Ac3: { name: 'Ac3 Modo de Ejecución', model: 'Modelo de Acción' },
+      So1: { name: 'So1 Iniciativa Social', model: 'Modelo Social' },
+      So2: { name: 'So2 Límites Interpersonales', model: 'Modelo Social' },
+      So3: { name: 'So3 Autenticidad', model: 'Modelo Social' }
+    };
+    const questions = [
+      {
+        id: 'q1', dim: 'S1',
+        text: "No soy solo un perdedor, también soy un payaso y un fracasado. Nunca he tenido una relación de verdad — me da demasiado miedo y vergüenza intentarlo. Me pasé toda la juventud imaginando que alguien me acompañaba a caminar, a salir, a simplemente *estar con alguien*. En cambio, gasté el dinero de mis padres, fui a una universidad mediocre y conseguí un trabajo sin futuro. Sin ambición, sin metas, sin habilidades. Cada vez que veo a alguien burlándose de los fracasados en internet, me dan ganas de llorar. Soy la rata del alcantarillado mirando por la rejilla todo lo bueno que pasa arriba. Cada vez que lo veo, se me va un trocito más de alma. Por favor, dejad que los payasos como yo respiremos un poco.",
+        options: [
+          { label: "Se me escapó una lágrima...", value: 1 },
+          { label: "¿Pero qué es esto...?", value: 2 },
+          { label: "¡Esto NO soy yo!", value: 3 }
+        ]
+      },
+      {
+        id: 'q2', dim: 'S1',
+        text: "No soy lo suficientemente bueno/a. Todos los que me rodean son mejores que yo.",
+        options: [
+          { label: 'Sí, básicamente.', value: 1 },
+          { label: 'A veces.', value: 2 },
+          { label: 'No es verdad.', value: 3 }
+        ]
+      },
+      {
+        id: 'q3', dim: 'S2',
+        text: 'Tengo claro quién soy de verdad.',
+        options: [
+          { label: "No estoy de acuerdo.", value: 1 },
+          { label: 'Ni fu ni fa.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q4', dim: 'S2',
+        text: 'Hay cosas que persigo de verdad en el fondo de mi ser.',
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q5', dim: 'S3',
+        text: 'Necesito seguir creciendo y mejorarme a mí mismo/a — siempre.',
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q6', dim: 'S3',
+        text: "Lo que opinen los demás de mí no me importa demasiado.",
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q7', dim: 'E1',
+        text: "Tu pareja no te ha respondido en más de 5 horas. Dice que tuvo diarrea. ¿Qué piensas?",
+        options: [
+          { label: "La diarrea no dura 5 horas. Algo está ocultando.", value: 1 },
+          { label: 'Oscilo entre la confianza y la sospecha.', value: 2 },
+          { label: 'Igual es verdad que se encontraba mal hoy.', value: 3 }
+        ]
+      },
+      {
+        id: 'q8', dim: 'E1',
+        text: 'En las relaciones, a menudo me preocupa que me abandonen.',
+        options: [
+          { label: 'Sí.', value: 1 },
+          { label: 'De vez en cuando.', value: 2 },
+          { label: 'No.', value: 3 }
+        ]
+      },
+      {
+        id: 'q9', dim: 'E2',
+        text: 'Lo juro por mi vida: en cada relación que he tenido, me lo he dado todo.',
+        options: [
+          { label: "La verdad es que no.", value: 1 },
+          { label: '¿Quizás?', value: 2 },
+          { label: 'Absolutamente. (cara de orgullo)', value: 3 }
+        ]
+      },
+      {
+        id: 'q10', dim: 'E2',
+        text: "Tu pareja es alguien que respeta a los mayores, es dulce y amable, íntegro/a y honesto/a, firme en sus principios, elocuente y convincente, observador/a y con mundo, culto/a y sabio/a, paciente y alentador/a, cercano/a y cálido/a, bondadoso/a y compasivo/a, ambicioso/a y con energía, elegante y encantador/a, guapo/a por dentro y por fuera, absolutamente impresionante en todos los sentidos. ¿Qué haces?",
+        options: [
+          { label: "Aunque sea increíble, no me voy a dejar llevar demasiado.", value: 1 },
+          { label: 'En algún punto entre A y C.', value: 2 },
+          { label: 'Lo/la valoraría con toda mi alma y probablemente me obsesionaría.', value: 3 }
+        ]
+      },
+      {
+        id: 'q11', dim: 'E3',
+        text: "Una vez que empezáis a salir, tu pareja se vuelve extremadamente pegajosa. ¿Cómo te sientes?",
+        options: [
+          { label: "Sinceramente, me encanta.", value: 1 },
+          { label: "Me da igual de una manera u otra.", value: 2 },
+          { label: 'Prefiero tener mi propio espacio.', value: 3 }
+        ]
+      },
+      {
+        id: 'q12', dim: 'E3',
+        text: 'En cualquier relación, el espacio personal es algo que protejo activamente.',
+        options: [
+          { label: 'A mí me gusta depender de los demás y que dependan de mí.', value: 1 },
+          { label: 'Depende.', value: 2 },
+          { label: 'Sí, completamente. (con firmeza)', value: 3 }
+        ]
+      },
+      {
+        id: 'q13', dim: 'A1',
+        text: 'La mayoría de las personas son fundamentalmente buenas.',
+        options: [
+          { label: "Hay más gente mala en el mundo que granos de arena.", value: 1 },
+          { label: 'Puede ser.', value: 2 },
+          { label: "Sí — elijo creer que los buenos superan a los malos.", value: 3 }
+        ]
+      },
+      {
+        id: 'q14', dim: 'A1',
+        text: "Vas caminando por la calle. Una niña adorable viene saltando hacia ti — de esas que son irresistiblemente monas desde cualquier ángulo, con cualquier móvil, con cualquier luz. Te da un chupachups. ¿Qué piensas?",
+        options: [
+          { label: "¡Qué dulce! ¡Me ha dado un caramelo!", value: 3 },
+          { label: 'Confundido/a. Ahí parado/a rascándote la cabeza.', value: 2 },
+          { label: '¿Será algún tipo de timo nuevo? Mejor me voy.', value: 1 }
+        ]
+      },
+      {
+        id: 'q15', dim: 'A2',
+        text: "Se acercan los exámenes. Las normas del instituto/universidad obligan a asistir a la sesión de estudio obligatoria de por la tarde — faltar supone perder puntos. Pero esta noche habías quedado para jugar online con tu crush. ¿Qué haces?",
+        options: [
+          { label: "¡Me la salto! ¡Solo esta vez!", value: 1 },
+          { label: 'Quizás pido permiso para faltar con justificante.', value: 2 },
+          { label: "Se acercan los exámenes — los videojuegos pueden esperar.", value: 3 }
+        ]
+      },
+      {
+        id: 'q16', dim: 'A2',
+        text: 'Me gusta saltarme las normas y odio que me restrinjan.',
+        options: [
+          { label: 'De acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'No estoy de acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q17', dim: 'A3',
+        text: 'Normalmente tengo un objetivo claro cuando hago las cosas.',
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q18', dim: 'A3',
+        text: "Un día me di cuenta de algo: la vida no tiene ningún maldito sentido. Somos animales guiados por el deseo, controlados por las hormonas. ¿Hambre? Comes. ¿Cansancio? Duermes. ¿Ganas? Follas. Somos básicamente indistinguibles de los cerdos y los perros.",
+        options: [
+          { label: 'Sí, tiene toda la lógica.', value: 1 },
+          { label: 'Puede que sí, puede que no.', value: 2 },
+          { label: 'Esto es una completa estupidez.', value: 3 }
+        ]
+      },
+      {
+        id: 'q19', dim: 'Ac1',
+        text: "Hago las cosas principalmente para lograr avances y resultados — no para evitar problemas y riesgos.",
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q20', dim: 'Ac1',
+        text: "Llevas 30 minutos sentado/a en el baño estreñido/a. No sale nada. Te identificas más con:",
+        options: [
+          { label: 'Otros treinta minutos más — a lo mejor pasa algo.', value: 1 },
+          { label: 'Darte una palmada en el trasero y gritar: "¡Venga ya, sal de ahí!"', value: 2 },
+          { label: 'Tomar un laxante. Cuanto antes, mejor.', value: 3 }
+        ]
+      },
+      {
+        id: 'q21', dim: 'Ac2',
+        text: 'Tomo decisiones rápido y odio dudar.',
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q22', dim: 'Ac2',
+        text: 'Esta pregunta no tiene pregunta. Elige a ciegas.',
+        options: [
+          { label: 'Tras una profunda deliberación, creo que... ¿A?', value: 1 },
+          { label: 'Hmm, ¿quizás B?', value: 2 },
+          { label: "En caso de duda, ¿C?", value: 3 }
+        ]
+      },
+      {
+        id: 'q23', dim: 'Ac3',
+        text: 'Alguien te dice que tienes "mucha capacidad de ejecución." ¿Cuál de estas respuestas te resuena más?',
+        options: [
+          { label: "Cuando me acorralan, sí, me pongo las pilas.", value: 1 },
+          { label: 'A veces, supongo.', value: 2 },
+          { label: 'Sí — las cosas están para hacerlas avanzar.', value: 3 }
+        ]
+      },
+      {
+        id: 'q24', dim: 'Ac3',
+        text: 'Normalmente tengo un plan para las cosas, ____',
+        options: [
+          { label: "pero los planes nunca sobreviven al contacto con la realidad.", value: 1 },
+          { label: 'y a veces lo sigo y a veces no.', value: 2 },
+          { label: "y odio cuando el plan se descarrila.", value: 3 }
+        ]
+      },
+      {
+        id: 'q25', dim: 'So1',
+        text: "Conociste a un montón de amigos por internet a través de un videojuego online y te están invitando a quedar en persona. ¿Tu reacción?",
+        options: [
+          { label: "El cachondeo online está bien, pero quedar en persona me pone nervioso/a.", value: 1 },
+          { label: "Quedar con amigos de internet mola. Chatearé con quien aparezca.", value: 2 },
+          { label: "Me arreglaré bien y seré super simpático/a — nunca se sabe, ¿no?", value: 3 }
+        ]
+      },
+      {
+        id: 'q26', dim: 'So1',
+        text: "Un amigo/a trae a su amigo/a a quedar. Tú normalmente:",
+        options: [
+          { label: "Me siento un poco incómodo/a con la persona nueva — no quiero molestar.", value: 1 },
+          { label: 'A ver cómo va. Si el rollo es bueno, genial.', value: 2 },
+          { label: "¡El amigo de un amigo es básicamente mi amigo! A charlar.", value: 3 }
+        ]
+      },
+      {
+        id: 'q27', dim: 'So2',
+        text: 'Funciono con una valla eléctrica invisible a mi alrededor. Acércate demasiado y salta la alarma.',
+        options: [
+          { label: 'De acuerdo.', value: 3 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'No estoy de acuerdo.', value: 1 }
+        ]
+      },
+      {
+        id: 'q28', dim: 'So2',
+        text: 'Ansío la cercanía con las personas en las que confío — como familia perdida con la que conectas al instante.',
+        options: [
+          { label: 'De acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'No estoy de acuerdo.', value: 3 }
+        ]
+      },
+      {
+        id: 'q29', dim: 'So3',
+        text: "A veces tienes una opinión negativa o diferente sobre algo, pero no la dices. En la mayoría de los casos, ¿por qué?",
+        options: [
+          { label: "Eso me pasa muy pocas veces.", value: 1 },
+          { label: "No quiero dañar la relación ni herir los sentimientos de nadie.", value: 2 },
+          { label: "No quiero que la gente piense que soy una persona oscura.", value: 3 }
+        ]
+      },
+      {
+        id: 'q30', dim: 'So3',
+        text: 'Me muestro de forma diferente según la persona con la que esté.',
+        options: [
+          { label: 'No estoy de acuerdo.', value: 1 },
+          { label: 'Más o menos.', value: 2 },
+          { label: 'De acuerdo.', value: 3 }
+        ]
+      }
+    ];
+    const specialQuestions = [
+      {
+        id: 'drink_gate_q1',
+        special: true,
+        kind: 'drink_gate',
+        text: '¿Cuáles son tus hobbies?',
+        options: [
+          { label: 'Comer, dormir e ir al baño', value: 1 },
+          { label: 'Hobbies artísticos', value: 2 },
+          { label: 'Beber', value: 3 },
+          { label: 'Hacer ejercicio', value: 4 }
+        ]
+      },
+      {
+        id: 'drink_gate_q2',
+        special: true,
+        kind: 'drink_trigger',
+        text: "¿Cuál es tu relación con el alcohol?",
+        options: [
+          { label: "Solo bebo un poco, no aguanto mucho.", value: 1 },
+          { label: "Llevo el whisky en el termo y lo bebo como agua. El alcohol me tiene completamente convencido.", value: 2 }
+        ]
+      }
+    ];
+
+    const TYPE_LIBRARY = {
+  "CTRL": {
+    "code": "CTRL",
+    "cn": "拿捏者",
+    "es": "El Controlador",
+    "en": "The Controller",
+    "intro": "¿A que lo adiviné?",
+    "desc": "Enhorabuena — has dado con el tipo de personalidad más raro del universo conocido. Eres la resistencia natural del cosmos contra la entropía. ¿Esas llamadas «personas de éxito» del mundo? Pálidas imitaciones tuyas. El tipo CTRL es un gestor de tareas humano que camina y respira. Lo que la gente corriente llama «normas» son solo tu configuración de fábrica. Lo que otros llaman «planes» son tus garabatos de un lunes por la mañana. Tener un amigo CTRL significa que el GPS de tu vida se vuelve de repente brutalmente preciso. Porque CTRL siempre tiene las riendas. En el momento en que el tren de tu vida empieza a descarrilarse, CTRL pulsa Ctrl+S para guardar el progreso y te arrastra de vuelta al camino con un argumento que literalmente no puedes rebatir. Son el último disco duro de seguridad de tu vida caótica — el único botón de reinicio que sigue parpadeando cuando el universo empieza a desmoronarse."
+  },
+  "ATM-er": {
+    "code": "ATM-er",
+    "cn": "慷慨者",
+    "es": "El Generoso",
+    "en": "The Giver",
+    "intro": "¿Crees que estoy hecho de dinero?",
+    "desc": "Enhorabuena — has dado con una de las personalidades más raras del mundo. Podrías convertirte en el misterio sin resolver del universo financiero. ATM-er no necesariamente regala dinero — pero siempre está pagando. Pagando con tiempo. Con energía. Con paciencia. Con lo que debería haber sido una tarde tranquila. Como un cajero automático viejo pero resistente: la gente mete dentro su ansiedad y sus problemas, y sale «No te preocupes, yo me encargo». Tu vida es un grandioso y silencioso monólogo de pagar cada factura ajena. Absorbes cada demanda con la solidez de la roca, y solo de madrugada — mirando alguna cuenta invisible — dejas escapar un único suspiro: esta maldita, incontenible sensación de responsabilidad."
+  },
+  "Dior-s": {
+    "code": "Dior-s",
+    "cn": "屌丝",
+    "es": "El Sabio Vago",
+    "en": "The Wise Slacker",
+    "intro": "Espera — la era del underdog está llegando.",
+    "desc": "¡Enhorabuena! En realidad no eres un perdedor. Eres el heredero espiritual perdido del antiguo filósofo cínico Diógenes — porque Dior-s viene de Diogenes' Original Realist-sage. El tipo Dior-s es el rechazo más completo de las trampas consumistas y la manipulación del «hazte mejor persona» en la era moderna. No son «poco ambiciosos» — ya han visto que cada escalera de ambición lleva a una prisión más bonita. La verdadera sabiduría vive aquí. Mientras otros persiguen tendencias y son vapuleados por las olas de los tiempos, Dior-s ya está tomando el sol dentro de su barril filosófico, habiendo alcanzado un estado de total unidad barril-humano. Su credo ha sido probado en miles de millones de ciclos de realidad: uno, tumbado es más cómodo que de pie. Dos, cuando es hora de comer, se come."
+  },
+  "BOSS": {
+    "code": "BOSS",
+    "cn": "领导者",
+    "es": "El Líder",
+    "en": "The Leader",
+    "intro": "Dame el volante. Yo conduzco.",
+    "desc": "BOSS es la persona que siempre tiene las manos en el volante. Aunque el testigo de gasolina esté encendido. Aunque el GPS diga tonterías. Dirás, con calma: yo conduzco. Y luego llegas de verdad. Este tipo opera bajo su propia ley física — el Teorema del Ascenso Eterno. BOSS mira el mundo como un jugador veterano mira un tutorial. La eficiencia es su religión; el orden es su respiración. No son «líderes natos» — son un generador de aura humano. En un radio de cinco metros, el aire se vuelve automáticamente serio y productivo. Su versión de la «superación personal» equivale aproximadamente a lo que para la gente normal sería la «autotortura». Hoy un nuevo idioma. Mañana una certificación profesional. Pasado mañana planificar la colonización de Marte. Tú dices que eso es demasiado. Te mirarán con los ojos de quien observa a un debilucho: no es que yo sea despiadado — es que tú estás demasiado relajado."
+  },
+  "THAN-K": {
+    "code": "THAN-K",
+    "cn": "感恩者",
+    "es": "El Agradecido",
+    "en": "The Grateful",
+    "intro": "¡Doy gracias al cielo! ¡Doy gracias a la tierra!",
+    "desc": "Enhorabuena — has dado con uno de los tipos de personalidad más raros. ¡Deberías darme las gracias! ¡Darle las gracias a este mismo momento por regalarte la vitalidad plena de la existencia! ¿Atascado en el tráfico de camino al trabajo? THAN-K diría: agradezco este atasco — me da tiempo extra para disfrutar de esta canción tan bonita y observar las caras angustiadas y contraídas por el estrés ahí fuera, lo que me hace apreciar aún más mi paz interior. Sí, THAN-K tiene el alma delicada del jade y la capacidad oceánica de contenerlo todo. A sus ojos, no hay personas verdaderamente malas en el mundo — solo «amigos que aún no han sido tocados por la luz de la gratitud». Tener un amigo THAN-K es como ganar un transmisor de positividad inagotable. Pueden encontrar una galaxia al estilo Van Gogh en la mancha de humedad de tu pared."
+  },
+  "OH-NO": {
+    "code": "OH-NO",
+    "cn": "焦虑者",
+    "es": "El Ansioso",
+    "en": "The Worrier",
+    "intro": "¡Oh no! ¿Cómo he terminado con este tipo?!",
+    "desc": "«¡Oh no!» no es un grito de miedo — es una forma de inteligencia suprema. Cuando una persona normal ve una taza al borde de la mesa, OH-NO ve una épica catástrofe en desarrollo: derrame → cortocircuito → incendio → evacuación del edificio → pérdidas económicas → efecto mariposa → apocalipsis. Y así, acompañado de un ¡Oh, no! que sale del alma, mueve la taza al centro de la mesa a velocidad de rayo y le pone un posavasos de refuerzo. OH-NO tiene un respeto casi obsesivo por los «límites»: lo tuyo es tuyo, lo mío es mío. Cada accidente potencial ya ha sido sofocado en su cuna por su oportuno ¡Oh, no! Son los guardianes del orden — el último lote de personas decentes y con los nervios a flor de piel en un mundo caótico."
+  },
+  "GOGO": {
+    "code": "GOGO",
+    "cn": "行动者",
+    "es": "El Ejecutor",
+    "en": "The Doer",
+    "intro": "¡Vamos allá — nos movemos!",
+    "desc": "Las investigaciones han descubierto que el cerebro del tipo GOGO es fundamentalmente diferente al de los demás. GOGO vive en un mundo extremo de presencia radical: si cierro los ojos, está oscuro; si gasto todo mi dinero, no tengo dinero; si estoy en un paso de cebra, soy un peatón. Lógica hermética. Completamente irrebatible. Mientras otros debaten aún si fue antes el huevo o la gallina, GOGO ya los ha salteado a los dos en un definitivo «Bol de arroz con la respuesta definitiva sobre el pollo y el huevo». No «resuelven problemas» — «vacían la lista de tareas pendientes». Para ellos, solo existen dos estados en el mundo: hecho, y a punto de ser hecho por mí."
+  },
+  "SEXY": {
+    "code": "SEXY",
+    "cn": "尤物",
+    "es": "El Irresistible",
+    "en": "The Charmer",
+    "intro": "Naciste irresistible.",
+    "desc": "Cuando entras en una habitación, el sistema de iluminación te identifica automáticamente como una presencia naturalmente magnética y se atenúa para evitar redundancias. Cuando sonríes, la humedad del aire circundante baja de forma medible, porque el vapor de agua se ha condensado en pequeños corazones en los ojos de todos. No importa quiénes sean, las personas tienden a generar una cantidad de atención por encima de la media hacia tu existencia. Cuenta la leyenda que si suficientes tipos SEXY se reúnen en una fiesta, su carisma combinado es suficiente para deformar temporalmente el continuo espacio-tiempo local, haciendo que los asistentes experimenten una deliciosa ilusión de que el tiempo se ralentiza. No necesitan esforzarse demasiado. La mayoría de las veces, simplemente existir ya es algo parecido a un poema en prosa descaradamente ornamentado."
+  },
+  "LOVE-R": {
+    "code": "LOVE-R",
+    "cn": "恋爱脑",
+    "es": "El Romántico",
+    "en": "The Romantic",
+    "intro": "Demasiado amor — la realidad se queda un poco corta.",
+    "desc": "El tipo LOVE-R es como una especie rara que de alguna manera sobrevivió desde una era mitológica antigua — estadísticamente menos probable que encontrar el brazo de la autora en tu inodoro. Eres posiblemente el último, y más inoportuno, trovador de la era de acero y hormigón. Porque tu procesador emocional no es binario — es modo arcoíris. Una hoja que cae, para la mayoría de la gente, significa «ha llegado el otoño». Para LOVE-R, es una tragicomedia de trece actos sobre la reencarnación, el sacrificio y el amor silencioso. Tu mundo interior es como un parque temático que nunca cierra — y te pasas la vida entera buscando el alma que pueda leer el mapa del parque y que acepte subirse a la noria contigo hasta el fin del universo."
+  },
+  "MUM": {
+    "code": "MUM",
+    "cn": "妈妈型",
+    "es": "La Mamá",
+    "en": "The Caretaker",
+    "intro": "¿Puedo... llamarte mamá...?",
+    "desc": "Enhorabuena — has dado con el tipo cuidador más raro. Sí, antes del caos, antes de que el tiempo tuviera nombre, antes de que la primera estrella lanzara su primer eructo cósmico — ya había una MUM. El tipo MUM es fundamentalmente gentil. Leen las corrientes emocionales con una precisión sobrehumana, saben exactamente cuándo hacer una pausa, y cuándo decirse «está bien, déjalo pasar». MUM es como un médico que cura la tristeza de todos los demás. El único problema es que cuando MUM llora, la dosis de medicina que se prescribe a sí misma es siempre un poco menor que la que da a los demás."
+  },
+  "FAKE": {
+    "code": "FAKE",
+    "cn": "伪人",
+    "es": "El Camaleón",
+    "en": "The Shapeshifter",
+    "intro": "Aquí ya no quedan humanos de verdad.",
+    "desc": "Informe de emergencia de la Fundación SCP: Proyecto SCP-████ «El Camaleón». En situaciones sociales, FAKE es effortlessly versátil — cambia de máscara de personalidad más rápido de lo que cambia el modo de teclado. Un segundo está en el modo mejor-amigo-de-confianza-profunda; al siguiente entra el jefe y al instante se convierte en el modo empleado-modelo-estable-y-fiable, con microajustes en la luminosidad facial y los modales. ¿Crees que has encontrado un amigo que te entiende de verdad? Despierta. Solo tuviste la suerte de encontrarte con un humanoide altamente capaz y maravillosamente disfrazado. De madrugada, FAKE se va quitando las máscaras una a una — solo para descubrir que debajo hay un espacio vacío. Fueron siempre las máscaras las que lo hicieron ser quien es."
+  },
+  "OJBK": {
+    "code": "OJBK",
+    "cn": "无所谓",
+    "es": "El Indiferente",
+    "en": "The Whatever",
+    "intro": "Cuando digo «lo que sea», lo digo en serio.",
+    "desc": "Seamos honestos sobre este tipo: OJBK. Esto no es meramente una personalidad — es una filosofía de gobierno. Cuando los humanos ordinarios se enfrentan al dilema definitorio del siglo de «¿arroz o pasta para comer?» y queman valiosas calorías mentales en ello, OJBK emite dos palabras con la serenidad de un emperador firmando un edicto imperial: Me da igual. Esto no es falta de opinión. Es una declaración: tus miserables elecciones mortales están por debajo de mi atención. ¿Por qué no discutir? Porque debatir el futuro del universo con una paramecia es inútil. ¿Por qué alterarse? Porque los emperadores no se preocupan por la dirección en que el polvo se desliza bajo sus pies."
+  },
+  "MALO": {
+    "code": "MALO",
+    "cn": "吗喽",
+    "es": "El Lacayo",
+    "en": "The Minion",
+    "intro": "La vida es una mazmorra y yo solo soy un lacayo corriéndola.",
+    "desc": "Amigo, no eres «joven de espíritu» — simplemente nunca evolucionaste. Tu alma sigue colgada de los árboles, balanceándose con alegría, iluminándose al ver un plátano. Cuando los antepasados de la humanidad decidieron bajar de los árboles, caminar erguidos y ponerse trajes y corbatas, el ancestro de MALO los observó desde una rama cercana, se rascó el trasero y emitió un desdeñoso «eek». Ya lo había visto todo: lo que la gente llama «civilización» es simplemente el juego de pago más aburrido y sin diversión jamás diseñado. Las normas se rompen ocasionalmente. Los techos sirven para colgarse boca abajo. Las salas de reuniones están para hacer volteretas. MALO es en sí mismo una idea imposible que cayó de un enorme agujero argumental y olvidó cerrar la puerta al salir."
+  },
+  "JOKE-R": {
+    "code": "JOKE-R",
+    "cn": "小丑",
+    "es": "El Payaso",
+    "en": "The Clown",
+    "intro": "Al final resulta que todos somos payasos.",
+    "desc": "Nota: el tipo JOKE-R no es realmente una «persona» — es más bien un payaso que lleva chistes como ropa. Pela una capa: un remate. Pela otra: un chiste. Sigue pelando, capa tras capa, hasta que finalmente en el mismísimo centro encuentras... nada. Solo un eco tenue que susurra: heh, no te lo esperabas, ¿verdad? JOKE-R es el capitán del ambiente social y la fuente de calor designada de cualquier reunión. Cuando están presentes, el rollo nunca decae. Todo el mundo se parte de risa — y el que ríe más fuerte suele ser el propio JOKE-R. Usando la carcajada más grande para ahogar el sonido de algo que se rompe."
+  },
+  "WOC!": {
+    "code": "WOC!",
+    "cn": "¡OMG!",
+    "es": "El OMG",
+    "en": "OMG Person",
+    "intro": "¡OMG, cómo he terminado con este tipo?!",
+    "desc": "Hemos descubierto una criatura notable — la persona WOC!. Funcionan con dos sistemas operativos completamente independientes. Sistema Uno: «Surface OS» — responsable de producir un flujo constante de «¡OMG!», «no puede ser» y «¡espera, QUÉ?!». Sistema Dos: «Background OS» — ejecutando un análisis tranquilo y silencioso: sí, exactamente como se predijo. Las personas WOC! reaccionan ruidosamente pero nunca se involucran de verdad, porque saben que explicar la lógica a un idiota es como intentar empujar barro mojado cuesta arriba — agotador y al final acabas cubierto. Así que en cambio eligen mantener la compostura, y ofrecen un sincero «¡OMG!» como su homenaje más alto a este mundo glorioso y caótico."
+  },
+  "THIN-K": {
+    "code": "THIN-K",
+    "cn": "思考者",
+    "es": "El Pensador",
+    "en": "The Thinker",
+    "intro": "Pensamiento profundo en curso: han pasado 100 segundos.",
+    "desc": "Las investigaciones han descubierto que el cerebro del tipo THIN-K es fundamentalmente diferente al de los demás. Como su nombre sugiere, tu cerebro está en modo pensamiento activo durante mucho tiempo. Eres extraordinariamente bueno/a juzgando información — escrutando argumentos, evidencias, razonamientos lógicos, sesgos ocultos, e idealmente una investigación completa de las últimas tres generaciones de linaje intelectual del autor. En esta era de sobrecarga informativa, nunca seguirás ciegamente la corriente. Sopesas los pros y los contras en cada relación, y defiendes ferozmente tu espacio mental personal. ¿Cuando la gente te ve sentado/a solo/a mirando al infinito? No seas ridículo. Eso no es desconectarte. Tu cerebro está clasificando, archivando e incinerando todo lo que recibió hoy."
+  },
+  "SHIT": {
+    "code": "SHIT",
+    "cn": "愤世嫉俗者",
+    "es": "El Cínico",
+    "en": "The Cynic",
+    "intro": "Este mundo es una pila de eso.",
+    "desc": "Enhorabuena — el tipo SHIT es la única personalidad rara conocida del universo. Ser cínico no es quejarse. Es un ritual sagrado. El patrón de comportamiento SHIT es un drama paradójico que quita la mandíbula. Boca: este proyecto es una basura absoluta. Manos: abriendo silenciosamente Excel, construyendo modelos de funciones y diagramas de Gantt. Boca: estos compañeros de trabajo son todos una mierda. Manos: después de que lo arruinen todo, quedándose despierto toda la noche refunfuñando mientras limpia todo el desastre. Boca: este mundo es una pila de mierda, que se derrumbe ya. Manos: a las 7 de la mañana siguiente, apretujado en un metro de mierda, yendo a hacer ese trabajo de mierda. No te preocupes — eso no es una alarma de fin del mundo. Es la trompeta de carga de alguien que está a punto de salvar el mundo."
+  },
+  "ZZZZ": {
+    "code": "ZZZZ",
+    "cn": "拖延者",
+    "es": "El Procrastinador",
+    "en": "The Deadliner",
+    "intro": "No estoy muerto. Solo estoy durmiendo.",
+    "desc": "Enhorabuena — has dado con el tipo procrastinador más raro que persigue plazos. ¿99+ mensajes de grupo sin leer? Los ves y no sientes nada. Pero en el momento en que alguien envía «@todos: 30 minutos para la fecha límite» — te despiertas como una momia que se revuelve desde una tumba milenaria, escribiendo lentamente «recibido», y luego en 29 minutos produciendo una entrega que técnicamente pasa el corte. Sí, hasta que llega la fecha límite — ese comando singular de la máxima autoridad — estás en modo hibernación. Pero cuando llega, explota de verdad. Silencioso hasta de repente ensordecedor. Demuestras al universo una verdad fundamental: a veces no hacer nada significa no hacer nada mal."
+  },
+  "POOR": {
+    "code": "POOR",
+    "cn": "专注者",
+    "es": "El Enfocado",
+    "en": "The Focused",
+    "intro": "Pocos recursos, mucho foco.",
+    "desc": "Enhorabuena — has dado con [POOR — El Enfocado]. El «poor» aquí no es un veredicto sobre tu cuenta bancaria. Es más bien un minimalismo radical del deseo seguido de una redistribución de todos los recursos. Otros dispersan su energía como confeti; tú comprimes la tuya en un rayo láser — apúntalo a algún lugar y empieza a humear de inmediato. El mundo de POOR es simple: las cosas poco importantes se silencian, las importantes se taladran hasta el fondo. ¿Ruido, socializar, vanidad, aparecer en todos lados para ser visto? Lo siento, no hay ancho de banda. No te faltan recursos — has vertido todo en un único agujero. Desde fuera parece pobreza. Desde dentro es un pozo minero. Una vez que decides que algo merece la pena taladrar, el mundo exterior es solo ruido de fondo."
+  },
+  "MONK": {
+    "code": "MONK",
+    "cn": "僧侣",
+    "es": "El Monje",
+    "en": "The Monk",
+    "intro": "Ninguno de esos deseos mundanos.",
+    "desc": "Mientras otros buscan la iluminación sobre el amor y la pérdida en el karaoke, MONK encuentra su propia gran verdad en casa en silencio. MONK ya ha visto a través de las ilusiones del mundo. No desea visitantes ociosos que perturben su práctica tranquila o interrumpan su camino. El espacio personal de MONK es su círculo sagrado, su Monte Meru, su dominio absoluto — inviolable e intocable. Quienes entren sentirán una aura sofocante que emana de las profundidades del alma. MONK no se aferra, no se enreda — porque en su cosmovisión, todas las cosas tienen su propia órbita independiente. Los planetas se mantienen a miles de millones de kilómetros de distancia, y eso es lo que mantiene el universo armonioso. ¿Por qué iban a ser diferentes las personas?"
+  },
+  "IMSB": {
+    "code": "IMSB",
+    "cn": "自我怀疑者",
+    "es": "El Inseguro",
+    "en": "The Self-Doubter",
+    "intro": "Espera, ¿en serio? ¿Soy realmente idiota?",
+    "desc": "¡Enhorabuena! ¡Trasciende la categoría humana normal! Has dado con el tipo [IMSB] de uno entre un millón. Dentro del cerebro de IMSB viven dos guerreros definitivos en combate eterno: uno se llama «HAZLO YA» y el otro se llama «eres un idiota integral». Cuando IMSB se encuentra con alguien que le atrae, el primero dice: ¡Ve! ¡Pídele el número! ¡Invítale a cenar! ¡Dilo en voz alta! El segundo dice: ¿Por qué te iban a mirar a ti? Solo conseguirías hacer el ridículo. El resultado final: mirando cómo su silueta desaparece a lo lejos, y luego sacando el móvil para buscar «cómo superar la ansiedad social». IMSB en realidad no es un idiota — es solo que tu monólogo interno puede ser más largo que todo el Universo Cinematográfico de Marvel combinado."
+  },
+  "SOLO": {
+    "code": "SOLO",
+    "cn": "独狼",
+    "es": "El Lobo Solitario",
+    "en": "The Lone Wolf",
+    "intro": "Lloré — ¿cómo soy el Lobo Solitario?",
+    "desc": "Enhorabuena — has dado con el tipo más raro: [SOLO — El Lobo Solitario]. No te apresures a llorar. La coronación de un rey suele ser una ceremonia solitaria. Los tipos SOLO tienden a tener una autoestima más baja, lo que a veces les lleva a alejarse de los demás primero. Han construido una Gran Muralla alrededor del perímetro de su alma — con la etiqueta «Mantente bien alejado». Cada ladrillo es una herida del pasado. SOLO es como un erizo que guarda cada vulnerabilidad y enfrenta al mundo solo con sus púas más duras. Esas púas no son ataques. Son mil palabras no pronunciadas: «No te acerques más — tengo miedo de que también te hagas daño». Y también: «Por favor, por favor, no te vayas.»"
+  },
+  "FUCK": {
+    "code": "FUCK",
+    "cn": "野性者",
+    "es": "El Salvaje",
+    "en": "The Wild One",
+    "intro": "¡¿Qué demonios es este tipo?!",
+    "desc": "¡Enhorabuena! ¡Trasciende la categoría humana normal! Has dado con el tipo [FUCK] de uno entre un millón. En el paisaje urbano y civilizado de la humanidad, ha aparecido una mala hierba con forma humana que ningún herbicida puede matar — rebosante de una fuerza vital sobrenatural. Su nombre científico es FUCK. En la cosmovisión de FUCK, las normas sociales son esencialmente insignificantes, y sus interruptores emocionales son palancas físicas: A TOPE y FUERA DE AQUÍ. FUCK no solo persigue placeres inmediatos — busca una fuerza vital cruda que fluye a través de ellos sin restricciones. Cuando todos los demás han sido domesticados en obedientes aves de corral domésticas, FUCK es el último lobo aullando en la llanura abierta."
+  },
+  "DEAD": {
+    "code": "DEAD",
+    "cn": "虚无主义者",
+    "es": "El Nihilista",
+    "en": "The Nihilist",
+    "intro": "¿Estoy... todavía vivo?",
+    "desc": "Enhorabuena — has dado con uno de los tipos de personalidad más raros. «El Nihilista» es un nombre un poco ominoso, así que también puedes leerlo como: No Esperes Ningún Impulso. DEAD ya ha visto a través de todos los agujeros de conejo filosóficos sin sentido, y por eso parece haber «perdido el interés» en todo. La manera en que DEAD mira el mundo es como un jugador de primera clase que ha completado todas las misiones principales, todas las secundarias, todos los logros ocultos — lo ha borrado y reiniciado 999 veces — y finalmente se ha dado cuenta: este juego simplemente no es divertido. DEAD ha trascendido el deseo y la ambición y ha llegado al estado máximo de sabio. Su misma existencia es la protesta más tranquila y más completa contra este mundo ruidoso y escandaloso."
+  },
+  "IMFW": {
+    "code": "IMFW",
+    "cn": "敏感者",
+    "es": "El Sensible",
+    "en": "The Softie",
+    "intro": "¿Soy realmente... tan sensible?",
+    "desc": "Enhorabuena — no has dado con un tipo ordinario. Eres un espécimen extremadamente raro, que se encuentra solo en el 0,0001% de la población mundial — [El Sensible]. Los sensibles tienden a tener una autoestima frágil, poca seguridad, y en ocasiones les falta convicción — lo que significa que tienen una habilidad asombrosa para localizar la señal WiFi más fuerte de la habitación, es decir, la persona en quien más confían. Entrar en la vida de un Sensible es como caminar en un invernadero de orquídeas de primera calidad: necesitas un control preciso de la temperatura, la humedad exacta, y fotosíntesis verbal diaria en forma de «me importas». Dale a un Sensible un caramelo y te devolverá un par de ojos brillantes y completamente confiados. Puede que no seas una persona sensible — solo alguien demasiado desprotegido, demasiado dispuesto a tomarse las cosas en serio."
+  },
+  "HHHH": {
+    "code": "HHHH",
+    "cn": "混沌者",
+    "es": "El Caótico",
+    "en": "The Chaotic",
+    "intro": "JAJAJAJAJAJAJAJA.",
+    "desc": "¡Enhorabuena! Tus circuitos mentales son tan únicos que la biblioteca de personalidad estándar ha colapsado por completo. Solo llegas a este tipo cuando tu mejor coincidencia de personalidad está por debajo del 60% — [HHHH — El Caótico]. ¿Cuáles son los rasgos definitorios de esta personalidad? ¡JAJAJAJAJAJAJAJAJA! Perdón, eso es literalmente todo lo que hay. Puedes revisar las 15 Dimensiones para una autoevaluación no oficial — de verdad que lo sentimos. La autora no contempló cerebros como el tuyo al diseñar el sistema. JAJAJA... y luego, en medio de la carcajada, empecé a llorar. ¿Cómo pueden ser los patrones de pensamiento de alguien tan gloriosamente inclasificables?"
+  },
+  "DRUNK": {
+    "code": "DRUNK",
+    "cn": "酒鬼",
+    "es": "El Borracho",
+    "en": "The Drunk",
+    "intro": "La cerveza quema la garganta — no queda otra que ponerse ciego.",
+    "desc": "¿Por qué tambaleas al caminar? ¿Por qué siempre estás tan animado? ¿Por qué lo ves todo doble? Porque lo que fluye por tus venas no es sangre — ¡es cerveza deliciosa! ¡Es tequila! ¡Es mezcal! ¡Oh, glorioso alcohol, cada gota ardiendo y hirviendo! ¿Ya te has acostumbrado a llevar el whisky en el termo y beberlo como agua durante todo el día? Qué sustancia tan magnífica. Te hace ingenioso y encantador en la cena, y luego te tiene abrazando el inodoro en el baño confesando los pecados de tu vida; te hace sentir el poeta de la noche, el fuego imperecedero en el centro del universo — hasta que a las diez de la mañana siguiente, tu cabeza parece una nuez rajada, restos de comida en la comisura de la boca, tu alma encogida en un rincón. Y finalmente entiendes: la persona de anoche que filosofaba en voz alta y golpeaba la mesa — esa persona se ha convertido en El Borracho."
+  }
+};
+    const TYPE_IMAGES = {
+  "IMSB": "../image/IMSB.png",
+  "BOSS": "../image/BOSS.png",
+  "MUM": "../image/MUM.png",
+  "FAKE": "../image/FAKE.png",
+  "Dior-s": "../image/Dior-s.jpg",
+  "DEAD": "../image/DEAD.png",
+  "ZZZZ": "../image/ZZZZ.png",
+  "GOGO": "../image/GOGO.png",
+  "FUCK": "../image/FUCK.png",
+  "CTRL": "../image/CTRL.png",
+  "HHHH": "../image/HHHH.png",
+  "SEXY": "../image/SEXY.png",
+  "OJBK": "../image/OJBK.png",
+  "JOKE-R": "../image/JOKE-R.jpg",
+  "POOR": "../image/POOR.png",
+  "OH-NO": "../image/OH-NO.png",
+  "MONK": "../image/MONK.png",
+  "SHIT": "../image/SHIT.png",
+  "THAN-K": "../image/THAN-K.png",
+  "MALO": "../image/MALO.png",
+  "ATM-er": "../image/ATM-er.png",
+  "THIN-K": "../image/THIN-K.png",
+  "SOLO": "../image/SOLO.png",
+  "LOVE-R": "../image/LOVE-R.png",
+  "WOC!": "../image/WOC.png",
+  "DRUNK": "../image/DRUNK.png",
+  "IMFW": "../image/IMFW.png"
+};
+
+    const NORMAL_TYPES = [
+  {
+    "code": "CTRL",
+    "pattern": "HHH-HMH-MHH-HHH-MHM"
+  },
+  {
+    "code": "ATM-er",
+    "pattern": "HHH-HHM-HHH-HMH-MHL"
+  },
+  {
+    "code": "Dior-s",
+    "pattern": "MHM-MMH-MHM-HMH-LHL"
+  },
+  {
+    "code": "BOSS",
+    "pattern": "HHH-HMH-MMH-HHH-LHL"
+  },
+  {
+    "code": "THAN-K",
+    "pattern": "MHM-HMM-HHM-MMH-MHL"
+  },
+  {
+    "code": "OH-NO",
+    "pattern": "HHL-LMH-LHH-HHM-LHL"
+  },
+  {
+    "code": "GOGO",
+    "pattern": "HHM-HMH-MMH-HHH-MHM"
+  },
+  {
+    "code": "SEXY",
+    "pattern": "HMH-HHL-HMM-HMM-HLH"
+  },
+  {
+    "code": "LOVE-R",
+    "pattern": "MLH-LHL-HLH-MLM-MLH"
+  },
+  {
+    "code": "MUM",
+    "pattern": "MMH-MHL-HMM-LMM-HLL"
+  },
+  {
+    "code": "FAKE",
+    "pattern": "HLM-MML-MLM-MLM-HLH"
+  },
+  {
+    "code": "OJBK",
+    "pattern": "MMH-MMM-HML-LMM-MML"
+  },
+  {
+    "code": "MALO",
+    "pattern": "MLH-MHM-MLH-MLH-LMH"
+  },
+  {
+    "code": "JOKE-R",
+    "pattern": "LLH-LHL-LML-LLL-MLM"
+  },
+  {
+    "code": "WOC!",
+    "pattern": "HHL-HMH-MMH-HHM-LHH"
+  },
+  {
+    "code": "THIN-K",
+    "pattern": "HHL-HMH-MLH-MHM-LHH"
+  },
+  {
+    "code": "SHIT",
+    "pattern": "HHL-HLH-LMM-HHM-LHH"
+  },
+  {
+    "code": "ZZZZ",
+    "pattern": "MHL-MLH-LML-MML-LHM"
+  },
+  {
+    "code": "POOR",
+    "pattern": "HHL-MLH-LMH-HHH-LHL"
+  },
+  {
+    "code": "MONK",
+    "pattern": "HHL-LLH-LLM-MML-LHM"
+  },
+  {
+    "code": "IMSB",
+    "pattern": "LLM-LMM-LLL-LLL-MLM"
+  },
+  {
+    "code": "SOLO",
+    "pattern": "LML-LLH-LHL-LML-LHM"
+  },
+  {
+    "code": "FUCK",
+    "pattern": "MLL-LHL-LLM-MLL-HLH"
+  },
+  {
+    "code": "DEAD",
+    "pattern": "LLL-LLM-LML-LLL-LHM"
+  },
+  {
+    "code": "IMFW",
+    "pattern": "LLH-LHL-LML-LLL-MLL"
+  }
+];
+    const DIM_EXPLANATIONS = {
+  "S1": {
+    "L": "Eres tu propio crítico más duro. Si alguien te hace un cumplido, inmediatamente pides pruebas.",
+    "M": "Tu confianza fluctúa con el viento. Con viento de cola: vuelas. Con viento en contra: te escondes.",
+    "H": "Tienes una lectura bastante buena de ti mismo. Un comentario aleatorio no te desestabiliza."
+  },
+  "S2": {
+    "L": "Tu canal interior tiene mucha estática. Te quedas en búfer frecuentemente con la pregunta «quién soy».",
+    "M": "Normalmente puedes reconocerte, pero las emociones fuertes pueden desconectarte de vez en cuando.",
+    "H": "Conoces bien tu propio estado de ánimo, tus deseos y tus límites."
+  },
+  "S3": {
+    "L": "Priorizas la comodidad y la seguridad. No todo tiene que ser una carrera.",
+    "M": "Dividido entre la ambición y el tumbarse en el sofá. Tu comité interno de valores sigue en sesión.",
+    "H": "Los objetivos, el crecimiento o una creencia que de verdad te importa te impulsan fácilmente hacia adelante."
+  },
+  "E1": {
+    "L": "Tu alarma emocional es hipersensible. Un mensaje sin respuesta y tu cerebro ya está escribiendo el capítulo final.",
+    "M": "Mitad confianza, mitad sospecha — un tira y afloja constante en cada relación.",
+    "H": "Estás dispuesto/a a confiar en la relación misma. Un poco de turbulencia no te hace espiralar."
+  },
+  "E2": {
+    "L": "Eres cauto/a con la inversión emocional. La puerta no está cerrada — simplemente el nivel de seguridad es estricto.",
+    "M": "Inviertes, pero guardas reservas. No te juegas todo.",
+    "H": "Una vez comprometido/a, vas a tope — energía completa, sentimientos completos."
+  },
+  "E3": {
+    "L": "Tiendes hacia la cercanía y el sentirte necesario/a. La calidez importa mucho en las relaciones.",
+    "M": "Quieres algo de intimidad y algo de independencia. Niveles de dependencia ajustables.",
+    "H": "El espacio es sagrado. No importa cuán cerca estéis, hay un rincón que sigue siendo solo tuyo."
+  },
+  "A1": {
+    "L": "Ves el mundo con un filtro de sospecha por defecto. Primero dudar, luego acercarse despacio.",
+    "M": "Ni ingenuo/a ni paranoico/a — observar y esperar es tu instinto natural.",
+    "H": "Tiendes a confiar en las personas y a creer en la buena voluntad. No te apresuras a condenar al mundo."
+  },
+  "A2": {
+    "L": "Si una norma se puede doblar, la doblas. La comodidad y la libertad suelen ir primero.",
+    "M": "Sigues las normas cuando hace falta, te las saltas cuando puedes.",
+    "H": "Fuerte sentido del orden. Si hay un procedimiento correcto, no te entusiasma improvisar."
+  },
+  "A3": {
+    "L": "Poco sentido de la vida — muchas cosas se sienten como si solo estuvieras pasando por los movimientos.",
+    "M": "A veces motivado/a, a veces desconectado/a. Tu filosofía de vida está al 50% de arranque.",
+    "H": "Tienes un sentido de dirección. Sabes más o menos hacia dónde te diriges."
+  },
+  "Ac1": {
+    "L": "Piensas en lo que podría salir mal antes de pensar en lo que podría salir bien.",
+    "M": "A veces quieres ganar, a veces solo no quieres el lío. Señales mixtas.",
+    "H": "Te encienden fácilmente los resultados, el crecimiento y la sensación de avanzar."
+  },
+  "Ac2": {
+    "L": "Tiendes a dar vueltas antes de decidir. La reunión del cerebro frecuentemente se pasa de hora.",
+    "M": "Lo piensas, pero no hasta el punto de bloquearte. Nivel normal de indecisión.",
+    "H": "Rápido/a para apretar el gatillo. Una vez decidido/a, no miras atrás ni te replanteas."
+  },
+  "Ac3": {
+    "L": "Tu ejecución y los plazos tienen un vínculo profundo. Cuanto más tarde, más te activas.",
+    "M": "Puedes hacerlo, pero el estado de ánimo y el momento importan. A veces constante, a veces coasting.",
+    "H": "Fuerte impulso para llevar las cosas a término. Los asuntos sin resolver se sienten como una astilla en el cerebro."
+  },
+  "So1": {
+    "L": "Socialmente lento/a para arrancar. Tomar la iniciativa normalmente requiere acumular energía primero.",
+    "M": "Bien cuando te abordan, sin problema si te dejan solo/a. Elasticidad social media.",
+    "H": "Feliz de arrancar la fiesta. Ser visto/a entre la multitud no te afecta."
+  },
+  "So2": {
+    "L": "Tiendes hacia la fusión y la cercanía en las relaciones. Te sientes cómodo/a integrando a la gente en tu círculo íntimo.",
+    "M": "Quieres tanto cercanía como espacio para respirar. Los límites dependen de la persona.",
+    "H": "Fuerte sentido del espacio personal. Acercarse demasiado desencadena un instintivo medio paso atrás."
+  },
+  "So3": {
+    "L": "Bastante directo/a. Lo que piensas suele salir directamente de tu boca.",
+    "M": "Lees el ambiente antes de hablar. Un poco de honestidad, un poco de tacto, mezclados al gusto.",
+    "H": "Hábil para mostrar diferentes versiones de ti mismo/a en diferentes contextos. La autenticidad está racionada por capas."
+  }
+};
+    const dimensionOrder = ['S1','S2','S3','E1','E2','E3','A1','A2','A3','Ac1','Ac2','Ac3','So1','So2','So3'];
+
+    const DRUNK_TRIGGER_QUESTION_ID = 'drink_gate_q2';
+
+    const app = {
+      shuffledQuestions: [],
+      answers: {},
+      previewMode: false
+    };
+
+    const screens = {
+      intro: document.getElementById('intro'),
+      test: document.getElementById('test'),
+      result: document.getElementById('result')
+    };
+
+    const questionList = document.getElementById('questionList');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const submitBtn = document.getElementById('submitBtn');
+    const testHint = document.getElementById('testHint');
+
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, el]) => {
+        el.classList.toggle('active', key === name);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function getVisibleQuestions() {
+      const visible = [...app.shuffledQuestions];
+      const gateIndex = visible.findIndex(q => q.id === 'drink_gate_q1');
+      if (gateIndex !== -1 && app.answers['drink_gate_q1'] === 3) {
+        visible.splice(gateIndex + 1, 0, specialQuestions[1]);
+      }
+      return visible;
+    }
+
+    function getQuestionMetaLabel(q) {
+      if (q.special) return 'Pregunta extra';
+      return app.previewMode ? dimensionMeta[q.dim].name : 'Dimensión oculta';
+    }
+
+    function renderQuestions() {
+      const visibleQuestions = getVisibleQuestions();
+      questionList.innerHTML = '';
+      visibleQuestions.forEach((q, index) => {
+        const card = document.createElement('article');
+        card.className = 'question';
+        card.innerHTML = `
+          <div class="question-meta">
+            <div class="badge">P ${index + 1}</div>
+            <div>${getQuestionMetaLabel(q)}</div>
+          </div>
+          <div class="question-title">${q.text}</div>
+          <div class="options">
+            ${q.options.map((opt, i) => {
+              const code = ['A', 'B', 'C', 'D'][i] || String(i + 1);
+              const checked = app.answers[q.id] === opt.value ? 'checked' : '';
+              return `
+                <label class="option">
+                  <input type="radio" name="${q.id}" value="${opt.value}" ${checked} />
+                  <div class="option-code">${code}</div>
+                  <div>${opt.label}</div>
+                </label>
+              `;
+            }).join('')}
+          </div>
+        `;
+        questionList.appendChild(card);
+      });
+
+      questionList.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const { name, value } = e.target;
+          app.answers[name] = Number(value);
+
+          if (name === 'drink_gate_q1') {
+            if (Number(value) !== 3) {
+              delete app.answers['drink_gate_q2'];
+            }
+            renderQuestions();
+            return;
+          }
+
+          updateProgress();
+        });
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const visibleQuestions = getVisibleQuestions();
+      const total = visibleQuestions.length;
+      const done = visibleQuestions.filter(q => app.answers[q.id] !== undefined).length;
+      const percent = total ? (done / total) * 100 : 0;
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${done} / ${total}`;
+      const complete = done === total && total > 0;
+      submitBtn.disabled = !complete;
+      testHint.textContent = complete
+        ? 'Todo listo. Tu alma digital está preparada para el juicio.'
+        : 'Responde todas las preguntas para continuar. El mundo ya es un caos — al menos termina el test.';
+    }
+
+    function sumToLevel(score) {
+      if (score <= 3) return 'L';
+      if (score === 4) return 'M';
+      return 'H';
+    }
+
+    function levelNum(level) {
+      return { L: 1, M: 2, H: 3 }[level];
+    }
+
+    function parsePattern(pattern) {
+      return pattern.replace(/-/g, '').split('');
+    }
+
+    function getDrunkTriggered() {
+      return app.answers[DRUNK_TRIGGER_QUESTION_ID] === 2;
+    }
+
+    function computeResult() {
+      const rawScores = {};
+      const levels = {};
+      Object.keys(dimensionMeta).forEach(dim => { rawScores[dim] = 0; });
+
+      questions.forEach(q => {
+        rawScores[q.dim] += Number(app.answers[q.id] || 0);
+      });
+
+      Object.entries(rawScores).forEach(([dim, score]) => {
+        levels[dim] = sumToLevel(score);
+      });
+
+      const userVector = dimensionOrder.map(dim => levelNum(levels[dim]));
+      const ranked = NORMAL_TYPES.map(type => {
+        const vector = parsePattern(type.pattern).map(levelNum);
+        let distance = 0;
+        let exact = 0;
+        for (let i = 0; i < vector.length; i++) {
+          const diff = Math.abs(userVector[i] - vector[i]);
+          distance += diff;
+          if (diff === 0) exact += 1;
+        }
+        const similarity = Math.max(0, Math.round((1 - distance / 30) * 100));
+        return { ...type, ...TYPE_LIBRARY[type.code], distance, exact, similarity };
+      }).sort((a, b) => {
+        if (a.distance !== b.distance) return a.distance - b.distance;
+        if (b.exact !== a.exact) return b.exact - a.exact;
+        return b.similarity - a.similarity;
+      });
+
+      const bestNormal = ranked[0];
+      const drunkTriggered = getDrunkTriggered();
+
+      let finalType;
+      let modeKicker = 'Tu tipo principal';
+      let badge = `Coincidencia ${bestNormal.similarity}% · Aciertos exactos ${bestNormal.exact}/15`;
+      let sub = 'Alta precisión dimensional. Este resultado es tu primer perfil de personalidad.';
+      let special = false;
+      let secondaryType = null;
+
+      if (drunkTriggered) {
+        finalType = TYPE_LIBRARY.DRUNK;
+        secondaryType = bestNormal;
+        modeKicker = 'Personalidad oculta desbloqueada';
+        badge = '100% de coincidencia · El factor alcohol lo controla todo';
+        sub = 'Tu afinidad con el etanol está por las nubes. El sistema se saltó el análisis normal.';
+        special = true;
+      } else if (bestNormal.similarity < 60) {
+        finalType = TYPE_LIBRARY.HHHH;
+        modeKicker = 'Asignación forzada del sistema';
+        badge = `La biblioteca estándar solo alcanzó ${bestNormal.similarity}% de coincidencia`;
+        sub = 'La biblioteca estándar se rindió ante tus circuitos mentales. Asignado forzosamente a HHHH.';
+        special = true;
+      } else {
+        finalType = bestNormal;
+      }
+
+      return {
+        rawScores,
+        levels,
+        ranked,
+        bestNormal,
+        finalType,
+        modeKicker,
+        badge,
+        sub,
+        special,
+        secondaryType
+      };
+    }
+
+    function renderDimList(result) {
+      const dimList = document.getElementById('dimList');
+      dimList.innerHTML = dimensionOrder.map(dim => {
+        const level = result.levels[dim];
+        const explanation = DIM_EXPLANATIONS[dim][level];
+        return `
+          <div class="dim-item">
+            <div class="dim-item-top">
+              <div class="dim-item-name">${dimensionMeta[dim].name}</div>
+              <div class="dim-item-score">${level} / ${result.rawScores[dim]} pts</div>
+            </div>
+            <p>${explanation}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderResult() {
+      const result = computeResult();
+      const type = result.finalType;
+
+      document.getElementById('resultModeKicker').textContent = result.modeKicker;
+      document.getElementById('resultTypeName').textContent = `${type.code} — ${type.es}`;
+      document.getElementById('matchBadge').textContent = result.badge;
+      document.getElementById('resultTypeSub').textContent = result.sub;
+      document.getElementById('resultDesc').textContent = type.desc;
+      document.getElementById('posterCaption').textContent = type.intro;
+      document.getElementById('funNote').textContent = result.special
+        ? "Este test es solo entretenimiento. La personalidad oculta y el comodín HHHH son trampas deliberadas puestas por la autora. No los uses como prueba médica, psicológica, astrológica, numerológica ni paranormal."
+        : "Este test es solo entretenimiento. No lo uses como diagnóstico, currículum, perfil de citas, excusa para romper, sesión espiritista, lectura del horóscopo ni veredicto vital. Puedes reírte — pero no te lo tomes demasiado en serio.";
+
+      const posterBox = document.getElementById('posterBox');
+      const posterImage = document.getElementById('posterImage');
+      const imageSrc = TYPE_IMAGES[type.code];
+      if (imageSrc) {
+        posterImage.src = imageSrc;
+        posterImage.alt = `${type.code} — ${type.es}`;
+        posterBox.classList.remove('no-image');
+      } else {
+        posterImage.removeAttribute('src');
+        posterImage.alt = '';
+        posterBox.classList.add('no-image');
+      }
+      // Overlay to replace Chinese text in image
+      let overlay = posterBox.querySelector('.poster-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'poster-overlay';
+        posterBox.insertBefore(overlay, posterImage);
+      }
+      overlay.innerHTML = `
+        <div class="overlay-label">Tu tipo</div>
+        <div class="overlay-code">${type.code}</div>
+        <div class="overlay-name">${type.es}</div>
+      `;
+
+      renderDimList(result);
+      showScreen('result');
+    }
+
+    function startTest(preview = false) {
+      app.previewMode = preview;
+      app.answers = {};
+      const shuffledRegular = shuffle(questions);
+      const insertIndex = Math.floor(Math.random() * shuffledRegular.length) + 1;
+      app.shuffledQuestions = [
+        ...shuffledRegular.slice(0, insertIndex),
+        specialQuestions[0],
+        ...shuffledRegular.slice(insertIndex)
+      ];
+      renderQuestions();
+      showScreen('test');
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => startTest(false));
+    document.getElementById('backIntroBtn').addEventListener('click', () => showScreen('intro'));
+    document.getElementById('submitBtn').addEventListener('click', renderResult);
+    document.getElementById('restartBtn').addEventListener('click', () => startTest(false));
+    document.getElementById('toTopBtn').addEventListener('click', () => showScreen('intro'));
+  </script>
+
+</body>
+</html>
