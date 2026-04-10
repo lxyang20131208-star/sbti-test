@@ -511,6 +511,40 @@
     .poster-box.no-image .poster-image {
       display: none;
     }
+    .poster-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 42%;
+      background: linear-gradient(180deg, #f7fbf8 60%, rgba(247,251,248,0) 100%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px 16px 0;
+      border-radius: 18px 18px 0 0;
+    }
+    .poster-overlay .overlay-label {
+      font-size: 11px;
+      color: var(--accent-strong);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .poster-overlay .overlay-code {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .poster-overlay .overlay-name {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
     .poster-caption {
       margin-top: 14px;
       color: var(--muted);
@@ -1731,6 +1765,18 @@
         posterImage.alt = '';
         posterBox.classList.add('no-image');
       }
+      // Overlay to replace Chinese text in image
+      let overlay = posterBox.querySelector('.poster-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'poster-overlay';
+        posterBox.insertBefore(overlay, posterImage);
+      }
+      overlay.innerHTML = `
+        <div class="overlay-label">Your type</div>
+        <div class="overlay-code">${type.code}</div>
+        <div class="overlay-name">${type.en}</div>
+      `;
 
       renderDimList(result);
       showScreen('result');
